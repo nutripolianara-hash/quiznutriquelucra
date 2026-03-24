@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutri que Lucra – Descubra seu Diagnóstico</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#9d8768;--gold-light:#c4b49e;--gold-pale:#f5efe8;--gold-dark:#6b5740;--cream:#faf7f3;--cream-dark:#f0e9df;--text:#1a1410;--muted:#7a6a58;--light:#b09880;--white:#ffffff;--green:#2a6e47;--radius:18px;--rsm:10px}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 70% 40% at 15% 0%,rgba(157,135,104,.12) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 85% 100%,rgba(196,180,158,.10) 0%,transparent 60%)}
+.app{position:relative;z-index:1;max-width:600px;margin:0 auto;padding:0 16px 80px}
+.topbar{display:flex;align-items:center;justify-content:center;padding:22px 0 18px}
+.logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--gold-dark)}
+.logo em{font-style:italic;color:var(--gold)}
+.prog-wrap{margin-bottom:24px}
+.prog-meta{display:flex;justify-content:space-between;margin-bottom:7px}
+.prog-meta span{font-size:12px;color:var(--light);font-weight:500}
+.prog-n{color:var(--gold)!important;font-weight:600!important}
+.prog-bar{height:4px;background:var(--cream-dark);border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light));border-radius:99px;transition:width .55s cubic-bezier(.4,0,.2,1)}
+.screen{display:none;animation:fadeUp .4s ease}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--white);border-radius:24px;border:1px solid rgba(157,135,104,.15);box-shadow:0 6px 40px rgba(107,87,64,.08),0 1px 4px rgba(107,87,64,.04);overflow:hidden}
+.card-top{padding:28px 28px 22px;background:linear-gradient(135deg,var(--gold-pale) 0%,#fff8f2 100%);border-bottom:1px solid rgba(157,135,104,.1)}
+.tag{display:inline-block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);background:rgba(157,135,104,.14);padding:4px 11px;border-radius:99px;margin-bottom:11px}
+.card-q{font-family:'Playfair Display',serif;font-size:20px;line-height:1.4;font-weight:600;color:var(--text)}
+.card-q em{font-style:italic;color:var(--gold-dark)}
+.card-sub{font-size:13px;color:var(--muted);margin-top:7px;line-height:1.6}
+.card-body{padding:22px 28px 28px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:flex-start;gap:13px;padding:14px 16px;border:1.5px solid rgba(157,135,104,.2);border-radius:var(--rsm);cursor:pointer;transition:all .2s ease;background:var(--white);user-select:none}
+.opt:hover{border-color:var(--gold-light);background:var(--gold-pale);transform:translateX(3px)}
+.opt.sel{border-color:var(--gold);background:var(--gold-pale);transform:translateX(5px);box-shadow:0 2px 14px rgba(157,135,104,.18)}
+.opt-bul{width:28px;height:28px;flex-shrink:0;border-radius:50%;background:var(--cream-dark);border:1.5px solid rgba(157,135,104,.25);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--muted);transition:all .2s;margin-top:1px}
+.opt.sel .opt-bul{background:var(--gold);border-color:var(--gold);color:#fff}
+.opt-txt{flex:1}
+.opt-t{font-size:14px;font-weight:500;color:var(--text);line-height:1.4}
+.opt-d{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.5}
+.btn-row{margin-top:20px}
+.btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold) 100%);color:#fff;border:none;border-radius:var(--rsm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{opacity:.91;transform:translateY(-1px);box-shadow:0 8px 22px rgba(107,87,64,.24)}
+.btn:disabled{opacity:.38;cursor:not-allowed;transform:none;box-shadow:none}
+/* INTRO */
+.intro-hero{text-align:center;padding:8px 0 20px}
+.intro-badge{display:inline-block;background:var(--gold-pale);border:1px solid rgba(157,135,104,.3);color:var(--gold-dark);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;padding:5px 14px;border-radius:99px;margin-bottom:16px}
+.intro-hero h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1.3;color:var(--text);margin-bottom:12px}
+.intro-hero h1 em{font-style:italic;color:var(--gold)}
+.intro-hero p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px}
+.trust-row{display:flex;justify-content:center;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+/* LEAD */
+.lead-hero{text-align:center;padding:6px 0 20px}
+.big-emoji{font-size:38px;display:block;margin-bottom:10px}
+.lead-hero h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--text);margin-bottom:8px;line-height:1.3}
+.lead-hero h2 em{font-style:italic;color:var(--gold)}
+.lead-hero p{font-size:13px;color:var(--muted);line-height:1.65}
+.form-f{margin-bottom:13px}
+.form-f label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.form-f input{width:100%;padding:13px 15px;border:1.5px solid rgba(157,135,104,.25);border-radius:var(--rsm);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--white);outline:none;transition:border-color .15s,box-shadow .15s}
+.form-f input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(157,135,104,.1)}
+.form-f input::placeholder{color:var(--light)}
+.form-f .ferr{font-size:11px;color:#c0392b;margin-top:4px;display:none}
+.form-f.err input{border-color:#c0392b}
+.form-f.err .ferr{display:block}
+.priv{font-size:11px;color:var(--light);text-align:center;margin-top:12px;line-height:1.6}
+/* RESULT */
+.res-hero{text-align:center;padding:4px 0 22px}
+.res-badge{display:inline-flex;align-items:center;gap:7px;background:var(--gold-pale);border:1px solid rgba(157,135,104,.3);border-radius:99px;padding:7px 18px;font-size:11px;font-weight:600;color:var(--gold-dark);margin-bottom:14px;text-transform:uppercase;letter-spacing:.06em}
+.res-hero h2{font-family:'Playfair Display',serif;font-size:23px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:10px}
+.res-hero h2 em{font-style:italic;color:var(--gold)}
+.res-hero p{font-size:13px;color:var(--muted);line-height:1.7}
+.diag{background:var(--gold-pale);border:1px solid rgba(157,135,104,.2);border-radius:var(--rsm);padding:18px;margin:18px 0}
+.diag-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;margin-bottom:11px}
+.diag-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px}
+.diag-item:last-child{margin-bottom:0}
+.diag-dot{width:20px;height:20px;border-radius:50%;background:var(--gold);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;font-weight:600}
+.diag-item p{font-size:13px;color:var(--muted);line-height:1.5}
+.diag-item p strong{color:var(--text);font-weight:500}
+.offer{border:1.5px solid rgba(157,135,104,.3);border-radius:var(--rsm);padding:22px;margin-bottom:18px;position:relative;overflow:hidden}
+.offer::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold-light))}
+.offer-tag{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:600;margin-bottom:6px}
+.offer-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:5px}
+.offer-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px}
+.pillars{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.pillar{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted)}
+.pi{font-size:15px;width:20px;flex-shrink:0;margin-top:1px}
+.pillar strong{color:var(--text);font-weight:500}
+.price-de{font-size:13px;color:var(--light);text-decoration:line-through}
+.price-por{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:var(--gold-dark);line-height:1}
+.price-por sup{font-size:16px;font-weight:600;vertical-align:super}
+.price-note{font-size:12px;color:var(--muted);margin-bottom:16px;margin-top:4px}
+.btn-green{width:100%;padding:17px;background:linear-gradient(135deg,#2a6e47,#3a9a67);color:#fff;border:none;border-radius:var(--rsm);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px}
+.btn-green:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 8px 22px rgba(42,110,71,.3)}
+.guarantee{display:flex;align-items:center;gap:10px;background:#f0faf5;border:1px solid rgba(42,110,71,.2);border-radius:var(--rsm);padding:12px 16px;font-size:12px;color:#2a6e47;line-height:1.5;margin-top:12px}
+.guarantee span{font-size:22px;flex-shrink:0}
+.social-proof{background:var(--cream-dark);border-radius:var(--rsm);padding:16px;margin-top:18px}
+.sp-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);font-weight:600;margin-bottom:12px}
+.testimonial{margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid rgba(157,135,104,.15)}
+.testimonial:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.t-name{font-size:12px;font-weight:600;color:var(--gold-dark);margin-bottom:3px}
+.t-text{font-size:12px;color:var(--muted);line-height:1.55;font-style:italic}
+@media(max-width:420px){.card-top,.card-body{padding-left:18px;padding-right:18px}.card-q{font-size:18px}.res-hero h2{font-size:20px}.intro-hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar"><div class="logo">nutri <em>que lucra</em></div></div>
+
+  <div class="prog-wrap" id="progWrap" style="display:none">
+    <div class="prog-meta"><span>Seu diagnóstico</span><span class="prog-n" id="progN">Pergunta 1 de 6</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- INTRO -->
+  <div class="screen active" id="s0">
+    <div class="card">
+      <div class="card-top">
+        <div class="intro-hero">
+          <div class="intro-badge">✦ Quiz Gratuito</div>
+          <h1>Você está presa no ciclo <em>consulta por consulta?</em></h1>
+          <p>Responda 6 perguntas honestas e descubra exatamente por que seu consultório ainda não decolou, e qual é o único caminho para sair desse ciclo de uma vez por todas.</p>
+          <div class="trust-row">
+            <div class="trust-item">⏱ 2 minutos</div>
+            <div class="trust-item">🎯 Diagnóstico real</div>
+            <div class="trust-item">🔒 100% gratuito</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="btn-row"><button class="btn" onclick="goTo('s1')">Quero meu diagnóstico →</button></div>
+        <p style="text-align:center;font-size:12px;color:var(--light);margin-top:12px">Mais de 140 nutris já fazem parte da comunidade</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="screen" id="s1">
+    <div class="card">
+      <div class="card-top">
+        <div class="tag">Pergunta 1 de 6</div>
+        <div class="card-q">Qual é sua <em>maior frustração</em> hoje no seu consultório?</div>
+      </div>
+      <div class="card-body">
+        <div class="opts">
+          <div class="opt" onclick="sel(this,'q1','a','btn1')"><div class="opt-bul">A</div><div class="opt-txt"><div class="opt-t">Agenda cheia, faturamento pequeno</div><div class="opt-d">Trabalho muito mas o dinheiro não aparece no final do mês.</div></div></div>
+          <div class="opt" onclick="sel(this,'q1','b','btn1')"><div class="opt-bul">B</div><div class="opt-txt"><div class="opt-t">Não consigo captar mais pacientes</div><div class="opt-d">Fico dependente de indicações e não consigo crescer.</div></div></div>
+          <div class="opt" onclick="sel(this,'q1','c','btn1')"><div class="opt-bul">C</div><div class="opt-txt"><div class="opt-t">Atendimento sem estrutura ou método</div><div class="opt-d">Improviso consulta a consulta, sem um processo claro.</div></div></div>
+          <div class="opt" onclick="sel(this,'q1','d','btn1')"><div class="opt-bul">D</div><div class="opt-txt"><div class="opt-t">Não sei quanto cobrar</div><div class="opt-d">Tenho medo de precificar alto e perder pacientes.</div></div></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="btn1" disabled onclick="goTo('s2')">Próxima →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="screen" id="s2">
+    <div class="card">
+      <div class="card-top">
+        <div class="tag">Pergunta 2 de 6</div>
+        <div class="card-q">Como é sua relação com o <em>dinheiro</em> no consultório?</div>
+      </div>
+      <div class="card-body">
+        <div class="opts">
+          <div class="opt" onclick="sel(this,'q2','a','btn2')"><div class="opt-bul">A</div><div class="opt-txt"><div class="opt-t">Nunca sobra nada no final do mês</div><div class="opt-d">Pago as contas, mas não consigo guardar nem investir.</div></div></div>
+          <div class="opt" onclick="sel(this,'q2','b','btn2')"><div class="opt-bul">B</div><div class="opt-txt"><div class="opt-t">Faturamento imprevisível</div><div class="opt-d">Um mês vai bem, no outro cai pela metade. Impossível planejar.</div></div></div>
+          <div class="opt" onclick="sel(this,'q2','c','btn2')"><div class="opt-bul">C</div><div class="opt-txt"><div class="opt-t">Sei que poderia cobrar mais, mas tenho medo</div><div class="opt-d">Sinto que meus pacientes não pagariam um valor maior.</div></div></div>
+          <div class="opt" onclick="sel(this,'q2','d','btn2')"><div class="opt-bul">D</div><div class="opt-txt"><div class="opt-t">Estou ok, mas quero mais previsibilidade</div><div class="opt-d">Quero estrutura para escalar com mais segurança.</div></div></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="btn2" disabled onclick="goTo('s3')">Próxima →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="screen" id="s3">
+    <div class="card">
+      <div class="card-top">
+        <div class="tag">Pergunta 3 de 6</div>
+        <div class="card-q">Você tem um <em>Programa Nutricional</em> estruturado para vender?</div>
+        <div class="card-sub">Um programa que o paciente contrata por um período, não só consulta avulsa.</div>
+      </div>
+      <div class="card-body">
+        <div class="opts">
+          <div class="opt" onclick="sel(this,'q3','a','btn3')"><div class="opt-bul">A</div><div class="opt-txt"><div class="opt-t">Não, só faço consultas avulsas</div><div class="opt-d">Cada consulta é vendida separadamente, sem recorrência.</div></div></div>
+          <div class="opt" onclick="sel(this,'q3','b','btn3')"><div class="opt-bul">B</div><div class="opt-txt"><div class="opt-t">Tenho algo, mas sem clareza</div><div class="opt-d">Vendo pacotes mas sem proposta ou método definido.</div></div></div>
+          <div class="opt" onclick="sel(this,'q3','c','btn3')"><div class="opt-bul">C</div><div class="opt-txt"><div class="opt-t">Sim, tenho um programa, mas quero melhorar</div><div class="opt-d">Já existe, mas quero mais resultado e mais vendas.</div></div></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="btn3" disabled onclick="goTo('s4')">Próxima →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="screen" id="s4">
+    <div class="card">
+      <div class="card-top">
+        <div class="tag">Pergunta 4 de 6</div>
+        <div class="card-q">O que mais te <em>trava</em> na hora de crescer?</div>
+      </div>
+      <div class="card-body">
+        <div class="opts">
+          <div class="opt" onclick="sel(this,'q4','a','btn4')"><div class="opt-bul">A</div><div class="opt-txt"><div class="opt-t">Não tenho tempo, apago incêndio o dia todo</div><div class="opt-d">O dia a dia consome tudo e não consigo trabalhar no negócio.</div></div></div>
+          <div class="opt" onclick="sel(this,'q4','b','btn4')"><div class="opt-bul">B</div><div class="opt-txt"><div class="opt-t">Não sei por onde começar a mudar</div><div class="opt-d">Vejo muito conteúdo mas fico perdida sem um passo a passo.</div></div></div>
+          <div class="opt" onclick="sel(this,'q4','c','btn4')"><div class="opt-bul">C</div><div class="opt-txt"><div class="opt-t">Falta apoio, ando sozinha nessa jornada</div><div class="opt-d">Sem referências ou troca com outras nutris que entendem meu momento.</div></div></div>
+          <div class="opt" onclick="sel(this,'q4','d','btn4')"><div class="opt-bul">D</div><div class="opt-txt"><div class="opt-t">Síndrome da impostora</div><div class="opt-d">Duvido se meu trabalho realmente vale o que quero cobrar.</div></div></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="btn4" disabled onclick="goTo('s5')">Próxima →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="screen" id="s5">
+    <div class="card">
+      <div class="card-top">
+        <div class="tag">Pergunta 5 de 6</div>
+        <div class="card-q">Se pudesse mudar <em>uma coisa agora</em> no seu consultório, o que seria?</div>
+      </div>
+      <div class="card-body">
+        <div class="opts">
+          <div class="opt" onclick="sel(this,'q5','a','btn5')"><div class="opt-bul">A</div><div class="opt-txt"><div class="opt-t">Ter um método claro para atender</div><div class="opt-d">Parar de improvisar e ter um processo que funciona para todos.</div></div></div>
+          <div class="opt" onclick="sel(this,'q5','b','btn5')"><div class="opt-bul">B</div><div class="opt-txt"><div class="opt-t">Ter mais pacientes entrando todo mês</div><div class="opt-d">Uma estratégia de captação previsível, sem depender de indicação.</div></div></div>
+          <div class="opt" onclick="sel(this,'q5','c','btn5')"><div class="opt-bul">C</div><div class="opt-txt"><div class="opt-t">Cobrar mais e com confiança</div><div class="opt-d">Precificar de forma justa e sentir que o paciente percebe esse valor.</div></div></div>
+          <div class="opt" onclick="sel(this,'q5','d','btn5')"><div class="opt-bul">D</div><div class="opt-txt"><div class="opt-t">Ter previsibilidade financeira</div><div class="opt-d">Saber quanto vai entrar no mês e conseguir planejar minha vida.</div></div></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="btn5" disabled onclick="goTo('s6')">Próxima →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="screen" id="s6">
+    <div class="card">
+      <div class="card-top">
+        <div class="tag">Pergunta 6 de 6</div>
+        <div class="card-q">Qual é seu <em>faturamento mensal</em> atual no consultório?</div>
+        <div class="card-sub">Essa informação é essencial para personalizar seu diagnóstico.</div>
+      </div>
+      <div class="card-body">
+        <div class="opts">
+          <div class="opt" onclick="sel(this,'q6','a','btn6')"><div class="opt-bul">A</div><div class="opt-txt"><div class="opt-t">Menos de R$2.000/mês</div><div class="opt-d">Ainda estou começando ou com poucos pacientes.</div></div></div>
+          <div class="opt" onclick="sel(this,'q6','b','btn6')"><div class="opt-bul">B</div><div class="opt-txt"><div class="opt-t">Entre R$2.000 e R$5.000/mês</div><div class="opt-d">Já tenho movimento, mas quero crescer de forma sólida.</div></div></div>
+          <div class="opt" onclick="sel(this,'q6','c','btn6')"><div class="opt-bul">C</div><div class="opt-txt"><div class="opt-t">Entre R$5.000 e R$10.000/mês</div><div class="opt-d">Estou crescendo, mas quero mais estrutura e previsibilidade.</div></div></div>
+          <div class="opt" onclick="sel(this,'q6','d','btn6')"><div class="opt-bul">D</div><div class="opt-txt"><div class="opt-t">Acima de R$10.000/mês</div><div class="opt-d">Faturando bem, quero escalar e profissionalizar ainda mais.</div></div></div>
+        </div>
+        <div class="btn-row"><button class="btn" id="btn6" disabled onclick="goTo('slead')">Ver meu diagnóstico →</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LEAD -->
+  <div class="screen" id="slead">
+    <div class="card">
+      <div class="card-top" style="background:linear-gradient(135deg,#f0faf5,#fff)">
+        <div class="lead-hero">
+          <span class="big-emoji">🎯</span>
+          <h2>Seu diagnóstico está <em>pronto!</em></h2>
+          <p>Identificamos exatamente o que está travando seu consultório. Informe seus dados para receber seu resultado personalizado.</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-f" id="ff-nome"><label>Seu nome</label><input type="text" id="f-nome" placeholder="Como posso te chamar?"><div class="ferr">Por favor, informe seu nome.</div></div>
+        <div class="form-f" id="ff-wpp"><label>WhatsApp</label><input type="tel" id="f-wpp" placeholder="(11) 99999-9999" maxlength="15"><div class="ferr">WhatsApp inválido.</div></div>
+        <div class="form-f" id="ff-email"><label>E-mail</label><input type="email" id="f-email" placeholder="seu@email.com"><div class="ferr">E-mail inválido.</div></div>
+        <div class="btn-row"><button class="btn" id="btnLead" onclick="submitLead()">Quero ver meu diagnóstico →</button></div>
+        <p class="priv">🔒 Seus dados estão seguros. Sem spam, prometido.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULTADO -->
+  <div class="screen" id="sresult">
+    <div class="card">
+      <div class="card-top" style="background:linear-gradient(135deg,var(--gold-pale),#fff8f2)">
+        <div class="res-hero">
+          <div class="res-badge">✦ Seu diagnóstico personalizado</div>
+          <h2 id="res-title">Você está presa no ciclo da <em>consulta avulsa</em></h2>
+          <p id="res-desc"></p>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="diag">
+          <div class="diag-label">🔍 Por que seu consultório está travado</div>
+          <div id="diag-items"></div>
+        </div>
+
+        <div class="offer">
+          <div class="offer-tag">✦ A virada que seu consultório precisa agora</div>
+          <div class="offer-name">Nutri que Lucra</div>
+          <div class="offer-desc">Enquanto você continua atendendo consulta por consulta, outras nutricionistas estão criando Programas Nutricionais, cobrando mais, atendendo menos e vivendo com previsibilidade. A diferença entre elas e você não é talento. É método. É a comunidade certa. É o Nutri que Lucra.</div>
+          <div class="pillars">
+            <div class="pillar"><span class="pi">📚</span><div><strong>Método Nutri que Lucra completo</strong>, do zero ao programa estruturado e vendendo</div></div>
+            <div class="pillar"><span class="pi">🤖</span><div><strong>Prompts de IA exclusivos para Nutris</strong>, para atender mais rápido e com mais qualidade</div></div>
+            <div class="pillar"><span class="pi">🔬</span><div><strong>Biblioteca científica aplicada</strong>, embasamento prático para o dia a dia</div></div>
+            <div class="pillar"><span class="pi">🎥</span><div><strong>Encontros ao vivo quinzenais</strong>, para tirar dúvidas, alinhar estratégia e evoluir junto com outras nutris</div></div>
+            <div class="pillar"><span class="pi">🚀</span><div><strong>Desafio de Vendas de 7 dias</strong>, para desbloquear suas primeiras vendas logo que entrar</div></div>
+            <div class="pillar"><span class="pi">👑</span><div><strong>Comunidade com +140 nutris</strong>, premiações por nível para quem aplica e cresce</div></div>
+            <div class="pillar"><span class="pi">📋</span><div><strong>Templates e ferramentas prontas</strong>, só baixar e usar com seus pacientes</div></div>
+            <div class="pillar"><span class="pi">🔄</span><div><strong>1 ano de acesso com todas as atualizações</strong>, sem pagar nada a mais por isso</div></div>
+          </div>
+          <div style="margin-bottom:8px"><span class="price-de">De R$3.885,00</span></div>
+          <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:6px">
+            <span style="font-size:13px;color:var(--muted)">por apenas</span>
+            <span style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--gold-dark)">12x</span>
+            <span class="price-por"><sup>R$</sup>52<span style="font-size:18px">,93</span></span>
+          </div>
+          <p class="price-note">ou R$497,00 à vista com desconto</p>
+          <button class="btn-green" onclick="window.open('https://lastlink.com/p/C5322CE18/checkout-payment/','_blank')">🔓 Quero entrar agora e transformar meu consultório!</button>
+          <p style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:10px">⚡ Acesso liberado imediatamente após a confirmação</p>
+          <div class="guarantee"><span>🛡️</span><div><strong>7 dias de garantia incondicional.</strong> Entrou, aplicou, não gostou por qualquer motivo: devolvemos 100% do valor. Sem burocracia, sem perguntas.</div></div>
+          <div style="background:#fff8f0;border:1px solid rgba(157,135,104,.25);border-radius:var(--rsm);padding:14px 16px;margin-top:12px;font-size:13px;color:var(--muted);line-height:1.6">
+            💭 <strong style="color:var(--text)">Pensa assim:</strong> cada mês que passa sem um Programa Nutricional estruturado é mais um mês começando do zero, cobrando barato e vendo outras nutris crescerem. O investimento é de R$52,93 por mês. O custo de não mudar é muito maior.
+          </div>
+        </div>
+
+        <div class="social-proof">
+          <div class="sp-label">+140 nutris já estão dentro. Veja o que dizem:</div>
+          <div class="testimonial"><div class="t-name">Fernanda Lima</div><div class="t-text">"Eu trabalhava com agenda lotada e não sobrava nada. Depois de estruturar meu Programa Nutricional dentro da comunidade, consegui dobrar meu faturamento atendendo menos pacientes."</div></div>
+          <div class="testimonial"><div class="t-name">Beatriz Silva</div><div class="t-text">"O Desafio de 7 dias foi decisivo. Na primeira semana já fechei minha primeira venda de programa. Nunca achei que seria tão rápido."</div></div>
+          <div class="testimonial"><div class="t-name">Ana Luíza Costa</div><div class="t-text">"Antes eu tinha medo de cobrar mais. Hoje sei exatamente quanto vale meu trabalho e tenho lista de espera de pacientes. O método muda tudo."</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ⚠️ SUBSTITUA PELA URL DO SEU APPS SCRIPT
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyiesu_JH8KcjR4RKap8BPfPB4jE99n8WQPb5DX0kJToMEpg95qj94cjkSP2V_YBfHwQQ/exec';
+
+const answers = {};
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  const qMap = {s1:1,s2:2,s3:3,s4:4,s5:5,s6:6};
+  const prog = document.getElementById('progWrap');
+  const fill = document.getElementById('progFill');
+  const label = document.getElementById('progN');
+  const q = qMap[id];
+  if (q) {
+    prog.style.display = 'block';
+    fill.style.width = ((q-1)/6*100)+'%';
+    label.textContent = 'Pergunta '+q+' de 6';
+  } else if (id === 'slead') {
+    prog.style.display = 'block';
+    fill.style.width = '100%';
+    label.textContent = 'Quase lá! ✦';
+  } else {
+    prog.style.display = 'none';
+  }
+}
+
+function sel(el, q, val, btnId) {
+  el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  answers[q] = val;
+  document.getElementById(btnId).disabled = false;
+}
+
+document.getElementById('f-wpp').addEventListener('input', function(){
+  let v = this.value.replace(/\D/g,'');
+  if(v.length<=2) v=v.replace(/(\d{0,2})/,'($1');
+  else if(v.length<=7) v=v.replace(/(\d{2})(\d+)/,'($1) $2');
+  else if(v.length<=11) v=v.replace(/(\d{2})(\d{5})(\d+)/,'($1) $2-$3');
+  else v=v.replace(/(\d{2})(\d{5})(\d{4}).*/,'($1) $2-$3');
+  this.value=v;
+});
+
+function submitLead() {
+  let ok = true;
+  const nome = document.getElementById('f-nome').value.trim();
+  const wpp  = document.getElementById('f-wpp').value.trim();
+  const email= document.getElementById('f-email').value.trim();
+  const fv = (id,valid) => { document.getElementById('ff-'+id).classList.toggle('err',!valid); if(!valid) ok=false; };
+  fv('nome', nome.length > 1);
+  fv('wpp',  wpp.length >= 13);
+  fv('email', email.includes('@') && email.includes('.'));
+  if(!ok) return;
+
+  const btn = document.getElementById('btnLead');
+  btn.disabled = true;
+  btn.textContent = 'Calculando diagnóstico...';
+
+  // Monta texto do diagnóstico para registrar na planilha
+  const diagMap = {
+    'consulta_avulsa': 'Presa no ciclo da consulta avulsa',
+    'posicionamento':  'Problema de posicionamento e precificação',
+    'comunidade':      'Falta comunidade e estrutura para escalar',
+    'metodo':          'Precisa de método e sistema para crescer'
+  };
+  const q3v = answers.q3||'a', q1v = answers.q1||'a', q4v = answers.q4||'a';
+  let diagKey = 'metodo';
+  if (q3v === 'a')               diagKey = 'consulta_avulsa';
+  else if (q1v==='d'||q1v==='a') diagKey = 'posicionamento';
+  else if (q4v === 'c')          diagKey = 'comunidade';
+  const diagTexto = diagMap[diagKey];
+
+  const fd = new FormData();
+  fd.append('nome', nome); fd.append('whatsapp', wpp); fd.append('email', email);
+  Object.entries(answers).forEach(([k,v]) => fd.append(k,v));
+  fd.append('diagnostico', diagTexto);
+  fetch(APPS_SCRIPT_URL, {method:'POST', body:fd}).catch(()=>{});
+
+  setTimeout(() => showResult(nome), 1400);
+}
+
+function showResult(nome) {
+  const first = nome.split(' ')[0];
+  const q1 = answers.q1||'a', q3 = answers.q3||'a', q4 = answers.q4||'a';
+  let title, desc, items;
+
+  if (q3 === 'a') {
+    title = first+', você está presa no ciclo da <em>consulta avulsa</em>';
+    desc  = 'Você troca tempo por dinheiro em cada consulta, e no final do mês o esforço não aparece no extrato. Isso não vai mudar sozinho. Sem um Programa Nutricional estruturado, daqui a 6 meses você vai estar exatamente no mesmo lugar: trabalhando muito, ganhando pouco, exausta.';
+    items = [
+      {t:'Faturamento que começa do zero todo mês', d:'Sem recorrência, você precisa "remontar" sua agenda mês após mês.'},
+      {t:'Dependência total de novos pacientes', d:'Sem programa, não há retenção real, a roda nunca para de girar.'},
+      {t:'Desgaste com improviso no atendimento', d:'Sem método definido, cada consulta consome mais energia do que deveria.'}
+    ];
+  } else if (q1 === 'd' || q1 === 'a') {
+    title = first+', o problema é o seu <em>posicionamento, não o mercado</em>';
+    desc  = 'Você está cobrando bem menos do que seu trabalho vale, e no fundo você sabe disso. E o pior: enquanto você hesita em subir o preço, outras nutris estão cobrando o dobro com os mesmos atendimentos, só porque têm um programa estruturado que comunica valor.';
+    items = [
+      {t:'Valor percebido abaixo do real', d:'Sem método visível, o paciente só enxerga o preço da consulta.'},
+      {t:'Agenda cheia não significa financeiro saudável', d:'Muita consulta, pouca margem. Hora de mudar o modelo.'},
+      {t:'Medo de subir o preço e perder pacientes', d:'Com programa estruturado, a conversa sobre valor muda completamente.'}
+    ];
+  } else if (q4 === 'c') {
+    title = first+', o que falta é <em>comunidade e estrutura</em> para escalar';
+    desc  = 'Você já tem movimento, mas anda sozinha nessa jornada. Cada decisão parece um risco porque você não tem referências de quem já passou pelo mesmo. Sem comunidade, sem método, o crescimento fica travado e a motivação vai embora aos poucos.';
+    items = [
+      {t:'Crescimento com teto invisível', d:'Sem sistema e apoio, você chega num ponto e trava.'},
+      {t:'Decisões tomadas no escuro', d:'Sem referência de outras nutris, cada escolha parece um risco maior.'},
+      {t:'Potencial represado', d:'Com método e comunidade certos, você pode dobrar o faturamento atual.'}
+    ];
+  } else {
+    title = first+', você está perto, falta só o <em>método e o sistema certo</em>';
+    desc  = 'Você já provou que é capaz, mas chegou num teto. E esse teto não vai subir sozinho: sem um sistema estruturado, você vai continuar trocando tempo por dinheiro, sem previsibilidade, dependendo só da sua energia para manter tudo funcionando.';
+    items = [
+      {t:'Crescimento ainda dependente da sua presença', d:'Sem programa recorrente, há um limite claro de quanto você pode faturar.'},
+      {t:'Meses bons e ruins sem previsão', d:'Sem estrutura, é difícil saber o que vai entrar mês a mês.'},
+      {t:'Potencial não aproveitado', d:'Com o método certo, você pode escalar com os mesmos pacientes.'}
+    ];
+  }
+
+  document.getElementById('res-title').innerHTML = title;
+  document.getElementById('res-desc').textContent = desc;
+  const dc = document.getElementById('diag-items');
+  dc.innerHTML = '';
+  items.forEach((item,i) => {
+    dc.innerHTML += `<div class="diag-item"><div class="diag-dot">${i+1}</div><p><strong>${item.t}:</strong> ${item.d}</p></div>`;
+  });
+  goTo('sresult');
+}
+</script>
+</body>
+</html>
